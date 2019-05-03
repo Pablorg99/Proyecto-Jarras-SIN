@@ -1,0 +1,40 @@
+\documentclass[12pt,a4paper,final]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+
+\author{Pablo Rodríguez Guillén (Representante): 32733455Q \\
+		José Márquez Doblas: 46074763J}
+\title{\textbf{Problema de las Jarras de Agua en CLIPS}}
+
+\setlength \parindent{0em}
+\setlength \parskip{1em}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Enunciado del Problema}
+El objetivo de este trabajo es la implementación de las técnicas de búsqueda primero en profundidad y primero en anchura para solucionar un problema típico de Inteligencia Artificial. El problema de las jarras de agua. El planteamiento del problema es el siguiente:
+
+Disponemos de dos jarras de agua, una de 4 litros de capacidad y otra de 3 litros de capacidad. Inicialmente están ambas vacías. El estado objetivo es que la jarra de 4 litros de capacidad contenga dos litros de agua, independientemente el contenido de la otra, sabiendo que en ninguna de las jarras hay una señal de volumen distinta de su capacidad. Para conseguir este objetivo, podemos realizar las siguientes acciones:
+
+\begin{enumerate}
+	\item Llenar la jarra de 4 litros completamente (para ello, la jarra de 4 litros no debe estar completamente llena).
+	\item Llenar la jarra de 3 litros completamente (para ello, la jarra de 3 litros no debe estar completamente llena).
+	\item Vaciar la jarra de 4 litros (para ello, la jarra debe contener algo de liquido).
+	\item Vaciar la jarra de 3 litros (para ello, la jarra debe contener algo de liquido).
+	\item Verter el contenido de la jarra de 4 litros en la jarra de 3 litros (para ello, la jarra de 4 litros debe contener algo de liquido y la de 3 litros no estar completamente llena).
+	\item Verter el contenido de la jarra de 3 litros en la jarra de 4 litros (para ello, la jarra de 3 litros debe contener algo de liquido y la de 4 litros no estar completamente llena).
+\end{enumerate}
+
+Identificar y representar los hechos necesarios para resolver el problema en clips mediante las dos técnicas de búsqueda comentadas anteriormente. Ha de controlarse también que no haya nodos repetidos.
+
+\section{Completar}
+
+
+\end{document}
