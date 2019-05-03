@@ -1,3 +1,0 @@
-\babel@toc {spanish}{}
-\contentsline {section}{\numberline {1}Enunciado del Problema}{2}
-\contentsline {section}{\numberline {2}Completar}{2}
