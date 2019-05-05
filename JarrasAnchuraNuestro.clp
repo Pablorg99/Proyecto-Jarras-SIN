@@ -1,4 +1,3 @@
-
 (deftemplate nodo
       (multislot estado
             (type INTEGER)
@@ -13,4 +12,11 @@
       (slot iteracion
             (type INTEGER)
             (default 0))
+)
+
+(defrule inicial
+      ?aux_fact <- (initial-fact)
+=>
+      assert(nodo)
+      retract ?aux_fact
 )
