@@ -48,7 +48,7 @@
 ; Generate state
 (defrule fillJar4L
       (declare (salience 300))
-      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      ?node <- (node (state j3 ?j3 j4 ?j4) (level ?l))
       (globalLevel ?gl)
       (test (eq ?gl ?l))
       (test (< ?j4 4))
@@ -59,7 +59,7 @@
 ; Generate state
 (defrule emptyJar4L
       (declare (salience 300))
-      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      ?node <- (node (state j3 ?j3 j4 ?j4) (level ?l))
       ?level <- (globalLevel ?gl)
       (test (eq ?gl ?l))
       (test (neq ?j4 0))
@@ -70,7 +70,7 @@
 ; Generate state
 (defrule emptyJar3L
       (declare (salience 300))
-      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      ?node <- (node (state j3 ?j3 j4 ?j4) (level ?l))
       (globalLevel ?gl)
       (test (eq ?gl ?l))
       (test (neq ?j3 0))  
@@ -81,7 +81,7 @@
 ; Generate state
 (defrule pourJ4InJ3
       (declare (salience 300))
-      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      ?node <- (node (state j3 ?j3 j4 ?j4) (level ?l))
       (bind ?spill (- (+ ?j4 ?j3) 3))
       (globalLevel ?gl)
       (test (eq ?gl ?l))
@@ -94,7 +94,7 @@
 
 (defrule pourJ4InJ3Spill
       (declare (salience 300))
-      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      ?node <- (node (state j3 ?j3 j4 ?j4) (level ?l))
       (bind ?spill (- (+ ?j4 ?j3) 3))
       (globalLevel ?gl)
       (test (eq ?gl ?l))
@@ -108,7 +108,7 @@
 ; Generate state
 (defrule pourJ3InJ4
       (declare (salience 300))
-      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      ?node <- (node (state j3 ?j3 j4 ?j4) (level ?l))
       (bind ?spill (- (+ ?j4 ?j3) 4))
       (globalLevel ?gl)
       (test (eq ?gl ?l))
@@ -121,7 +121,7 @@
 
 (defrule pourJ3InJ4Spill
       (declare (salience 300))
-      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      ?node <- (node (state j3 ?j3 j4 ?j4) (level ?l))
       (bind ?spill (- (+ ?j4 ?j3) 3))
       (globalLevel ?gl)
       (test (eq ?gl ?l))
@@ -130,4 +130,13 @@
       (test (> ?spill 0)
 =>
       assert(node (state j3 ?spill j4 4) (level (+ 1 ?l)) (father ?node))
+)
+
+
+(defrule finalResult 
+      (declare (salience 2000))
+      ?node -> (node (state j3 3 j4 4))
+=>
+      assert(final 1)
+      retract(final 0)
 )
