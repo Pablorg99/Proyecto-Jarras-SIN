@@ -93,6 +93,7 @@
       (assert(node (jars j3 (+ ?j3 ?j4) j4 0) (level (+ 1 ?l)) (father ?node)))
 )
 
+; Generate state
 (defrule pourJ4InJ3Spill
       (declare (salience 300))
       ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
@@ -120,6 +121,7 @@
       (assert(node (jars j3 0 j4 (+ ?j3 ?j4)) (level (+ 1 ?l)) (father ?node)))
 )
 
+; Generate state
 (defrule pourJ3InJ4Spill
       (declare (salience 300))
       ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
@@ -133,9 +135,23 @@
       (assert(node (jars j3 (- (+ ?j4 ?j3) 3) j4 4) (level (+ 1 ?l)) (father ?node)))
 )
 
+; Eliminate Twins
+(defrule eliminateTwins
+      (declare (salience 2000))
+      ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l) (father ?f))
+      ?twinNode <- (node (jars j3 ?tj3 j4 ?tj4) (level ?tl) (father ?tf))
+      (test (eq ?j4 ?tj4))
+      (test (eq ?j3 ?tj3))
+      (test (>= ?tl ?l))
+      (test (neq ?l 0))
+=>
+      (retract ?twinNode)
+)    
+
+
 
 (defrule finalResult 
-      (declare (salience 2000))
+      (declare (salience 3000))
       ?final <- (final 0)
       ?node <- (node (jars j3 ?j3 j4 2))
 =>
