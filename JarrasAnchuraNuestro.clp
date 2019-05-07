@@ -104,3 +104,30 @@
 =>
       assert(node (state j3 3 j4 ?spill) (level (+ 1 ?l)) (father ?node))
 )
+
+; Generate state
+(defrule pourJ3InJ4
+      (declare (salience 300))
+      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      (bind ?spill (- (+ ?j4 ?j3) 4))
+      (globalLevel ?gl)
+      (test (eq ?gl ?l))
+      (test (neq ?j3 0))
+      (test (neq ?j4 4))
+      (test (<= ?spill 0)
+=>
+      assert(node (state j3 (0) j4 (+ ?j3 ?j4)) (level (+ 1 ?l)) (father ?node))
+)
+
+(defrule pourJ3InJ4Spill
+      (declare (salience 300))
+      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      (bind ?spill (- (+ ?j4 ?j3) 3))
+      (globalLevel ?gl)
+      (test (eq ?gl ?l))
+      (test (neq ?j3 0))
+      (test (neq ?j4 4))
+      (test (> ?spill 0)
+=>
+      assert(node (state j3 ?spill j4 4) (level (+ 1 ?l)) (father ?node))
+)
