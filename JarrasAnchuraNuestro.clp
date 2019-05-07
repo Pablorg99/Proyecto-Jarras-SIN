@@ -135,7 +135,7 @@
 
 (defrule finalResult 
       (declare (salience 2000))
-      ?node -> (node (state j3 3 j4 4))
+      ?node -> (node (state j3 2 j4 ?j4))
 =>
       assert(final 1)
       retract(final 0)
