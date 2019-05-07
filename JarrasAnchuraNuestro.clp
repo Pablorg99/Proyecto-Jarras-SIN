@@ -49,7 +49,7 @@
 (defrule fillJar4L
       (declare (salience 300))
       ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
-      ?level <- (globalLevel ?gl)
+      (globalLevel ?gl)
       (test (eq ?gl ?l))
       (test (< ?j4 4))
 =>
@@ -57,7 +57,14 @@
 )
 
 
-
-
+(defrule emptyJar3L
+      (declare (salience 300))
+      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      (globalLevel ?gl)
+      (test (eq ?gl ?l))
+      (test (neq ?j3 0))  
+=>
+      assert(node (state j3 0 j4 ?j4) (level (+ 1 ?l)) (father ?node))
+)
 
 
