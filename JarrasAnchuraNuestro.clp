@@ -137,7 +137,7 @@
 (defrule finalResult 
       (declare (salience 2000))
       ?final <- (final 0)
-      ?node <- (node (jars j3 3 j4 4))
+      ?node <- (node (jars j3 ?j3 j4 2))
 =>
       (assert(final 1))
       (retract ?final)
