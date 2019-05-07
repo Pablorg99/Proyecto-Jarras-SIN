@@ -4,8 +4,8 @@
             (default j3 0 j4 0))
       (slot father
             (type FACT-ADDRESS SYMBOL)
-            (allowed-symbols sin-padre)
-            (default sin-padre))
+            (allowed-symbols none)
+            (default none))
       (slot level
             (type INTEGER)
             (default 0))
@@ -53,9 +53,18 @@
       (test (eq ?gl ?l))
       (test (< ?j4 4))
 =>
-      assert(node (state j3 ?j3 j4 4) (level (+ 1 ?l)) (father ?node))
+      assert(node (state j3 ?j3 j4 4) (father ?node) (level (+ 1 ?l)))
 )
 
+(defrule emptyJar4L
+      (declare (salience 300))
+      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      ?level <- (globalLevel ?gl)
+      (test (eq ?gl ?l))
+      (test (neq ?j4 0))
+=>
+      assert(node (state j3 ?j3 j4 0) (father ?node) (level (+ 1 ?l)) ) 
+)
 
 (defrule emptyJar3L
       (declare (salience 300))
