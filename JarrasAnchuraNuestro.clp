@@ -35,7 +35,7 @@
       assert(globalLevel (+ ?l 1))
 )
 
-
+; Generate state
 (defrule fillJar3L
       ?node <- (node (jars (j3 ?j3 j4 ?j4) (level ?nodeLevel))
       (globalLevel ?globalLevel)
@@ -56,6 +56,7 @@
       assert(node (state j3 ?j3 j4 4) (father ?node) (level (+ 1 ?l)))
 )
 
+; Generate state
 (defrule emptyJar4L
       (declare (salience 300))
       ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
@@ -66,6 +67,7 @@
       assert(node (state j3 ?j3 j4 0) (father ?node) (level (+ 1 ?l)) ) 
 )
 
+; Generate state
 (defrule emptyJar3L
       (declare (salience 300))
       ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
@@ -76,4 +78,29 @@
       assert(node (state j3 0 j4 ?j4) (level (+ 1 ?l)) (father ?node))
 )
 
+; Generate state
+(defrule pourJ4InJ3
+      (declare (salience 300))
+      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      (bind ?spill (- (+ ?j4 ?j3) 3))
+      (globalLevel ?gl)
+      (test (eq ?gl ?l))
+      (test (neq ?j3 3))
+      (test (neq ?j4 0))
+      (test (<= ?spill 0)
+=>
+      assert(node (state j3 (+ ?j3 ?j4) j4 0) (level (+ 1 ?l)) (father ?node))
+)
 
+(defrule pourJ4InJ3Spill
+      (declare (salience 300))
+      ?node <- node (state j3 ?j3 j4 ?j4) (level ?l))
+      (bind ?spill (- (+ ?j4 ?j3) 3))
+      (globalLevel ?gl)
+      (test (eq ?gl ?l))
+      (test (neq ?j3 3))
+      (test (neq ?j4 0))
+      (test (> ?spill 0)
+=>
+      assert(node (state j3 3 j4 ?spill) (level (+ 1 ?l)) (father ?node))
+)
