@@ -143,7 +143,7 @@
       (test (eq ?j4 ?tj4))
       (test (eq ?j3 ?tj3))
       (test (>= ?tl ?l))
-      (test (neq ?l 0))
+      (test (neq ?f ?tf))
 =>
       (retract ?twinNode)
 )    
@@ -153,7 +153,7 @@
 (defrule finalResult 
       (declare (salience 3000))
       ?final <- (final 0)
-      ?node <- (node (jars j3 3 j4 4))
+      ?node <- (node (jars j3 ?j3 j4 2))
 =>
       (assert(final 1))
       (retract ?final)
