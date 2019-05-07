@@ -83,7 +83,6 @@
 (defrule pourJ4InJ3
       (declare (salience 300))
       ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
-      ;(bind ?spill (- (+ ?j4 ?j3) 3))
       (globalLevel ?gl)
       (test (eq ?gl ?l))
       (test (neq ?j3 3))
@@ -97,7 +96,6 @@
 (defrule pourJ4InJ3Spill
       (declare (salience 300))
       ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
-      ;(bind ?spill (- (+ ?j4 ?j3) 3))
       (globalLevel ?gl)
       (test (eq ?gl ?l))
       (test (neq ?j3 3))
@@ -111,7 +109,6 @@
 (defrule pourJ3InJ4
       (declare (salience 300))
       ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
-      ;(bind ?spill (- (+ ?j4 ?j3) 4))
       (globalLevel ?gl)
       (test (eq ?gl ?l))
       (test (neq ?j3 0))
@@ -125,7 +122,6 @@
 (defrule pourJ3InJ4Spill
       (declare (salience 300))
       ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
-      ;(bind ?spill (- (+ ?j4 ?j3) 3))
       (globalLevel ?gl)
       (test (eq ?gl ?l))
       (test (neq ?j3 0))
@@ -149,7 +145,7 @@
 )    
 
 
-
+; Generate the Final result
 (defrule finalResult 
       (declare (salience 3000))
       ?final <- (final 0)
