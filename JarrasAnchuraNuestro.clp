@@ -4,8 +4,8 @@
             (default j3 0 j4 0))
       (slot father
             (type FACT-ADDRESS SYMBOL)
-            (allowed-symbols sin-padre)
-            (default sin-padre))
+            (allowed-symbols none)
+            (default none))
       (slot level
             (type INTEGER)
             (default 0))
