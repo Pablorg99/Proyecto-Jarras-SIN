@@ -1,316 +1,131 @@
-;
-;      primera version del programa Jarras de Agua
-;      búsqueda primero en profundidad
-;         
-
-(deftemplate estado
-      (slot j3
-            (type INTEGER)
-            (default 0))
-      (slot j4
-            (type INTEGER)
-            (default 0))
-      (slot padre
+(deftemplate node
+      (multislot jars 
+            (default j3 0 j4 0))
+      (slot father
             (type FACT-ADDRESS SYMBOL)
-            (allowed-symbols sin-padre)
-            (default sin-padre))
-      (slot nodo
+            (allowed-symbols none)
+            (default none))
+      (slot level
             (type INTEGER)
             (default 0))
-      (slot nivel
-            (type INTEGER))
-      (slot s-estado
-            (type STRING))
+      (slot iteration
+            (type INTEGER)
+            (default 0))
 )
 
 
-;**************************************************************
-;
-;	regla inicial
-;
-;**************************************************************
-
-(defrule inicial
-      ?x <- (initial-fact)
+; Initial jars (Two empty jars)
+(defrule initial
+      ?aux_fact <- (initial-fact)
 =>
-      (assert (estado (j3 0) (j4 0) (padre sin-padre) (nivel 1) (s-estado "[0:0]")))
-      (assert (nodoactual 1))
-      (retract ?x)
+      (assert(node (jars j3 0 j4 0) (father none) (level 0) (iteration 0)))
+      (assert(globalLevel 0))
+      (assert(globalIteration 0))
+      (assert(final 0))
+      (retract ?aux_fact)
 )
 
-
-
-;**************************************************************
-;
-;      regla llenar jarra de 4 litros
-;
-;**************************************************************
-
-
-(defrule llena-jarra-4
-      (declare (salience 500))
-      ?hecho <- (estado (j3 ?c3) (j4 0)(nivel ?nivel))
+; Generate state
+(defrule fillJar3L
+      (declare (salience 300))
+      ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?nodeLevel))
+      (test(< ?j3 3))
 =>
-      (assert (estado (j3 ?c3) (j4 4) (padre ?hecho) (nivel (+ ?nivel 1)) (s-estado "[Llena J4]")))
+      (assert(node (jars j3 3 j4 ?j4) (father ?node) (level (+ ?nodeLevel 1) )))
 )
 
-
-;**************************************************************
-;
-;      regla llenar jarra de tres litros
-;
-;**************************************************************
-
-(defrule llena-jarra-3
-      (declare (salience 500))
-      ?hecho <- (estado (j3 0) (j4 ?c4) (nivel ?nivel))
-      (test (neq ?c4 2))
+; Generate state
+(defrule fillJar4L
+      (declare (salience 300))
+      ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
+      (test (< ?j4 4))
 =>
-      (assert (estado (j3 3) (j4 ?c4) (padre ?hecho) (nivel (+ ?nivel 1)) (s-estado "[Llena J3]")))
+      (assert(node (jars j3 ?j3 j4 4) (father ?node) (level (+ 1 ?l))))
 )
 
-
-;*************************************************************
-;
-;      regla vacia jarra de 4 litros
-;
-;*************************************************************
-
-(defrule vacia-jarra-4
-      (declare (salience 500))
-      ?hecho <- (estado (j3 ?c3) (j4 ?c4)(nivel ?nivel))
-      (test (> ?c4 0))
-      (test (neq ?c4 2))
+; Generate state
+(defrule emptyJar4L
+      (declare (salience 300))
+      ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
+      (test (neq ?j4 0))
 =>
-      (assert (estado (j3 ?c3) (j4 0) (padre ?hecho) (nivel (+ ?nivel 1))(s-estado "[Vacia J4]")))
+      (assert(node (jars j3 ?j3 j4 0) (father ?node) (level (+ 1 ?l)))) 
 )
 
-;*************************************************************
-;
-;      regla vaciar jarra de 3 litros
-;
-;*************************************************************
-
-(defrule vacia-jarra-3
-      (declare (salience 500))
-      ?hecho <- (estado (j3 ?c3) (j4 ?c4)(nivel ?nivel))
-      (test (> ?c3 0))
-      (test (neq ?c4 2))
+; Generate state
+(defrule emptyJar3L
+      (declare (salience 300))
+      ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
+      (test (neq ?j3 0))  
 =>
-      (assert (estado (j3 0) (j4 ?c4) (padre ?hecho)(nivel (+ ?nivel 1)) (s-estado "[Vacia J3]")))
+      (assert(node (jars j3 0 j4 ?j4) (level (+ 1 ?l)) (father ?node)))
 )
 
-
-;*************************************************************
-;
-;      regla vierte j4 sobre j3 (1)
-;      (cabe mas de lo que se puede echar)
-;
-;*************************************************************
-
-(defrule vierte-j4-sobre-j3-1
-      (declare (salience 500))
-      ?hecho <- (estado (j3 ?c3) (j4 ?c4)(nivel ?nivel))
-      (test (> ?c4 0))
-      (test (< ?c3 3))
-      (test (> (- 3 ?c3) ?c4))
-      (test (neq ?c4 2))
+; Generate state
+(defrule pourJ4InJ3
+      (declare (salience 300))
+      ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
+      (test (neq ?j3 3))
+      (test (neq ?j4 0))
+      (test (<= (- (+ ?j4 ?j3) 3) 0))
 =>
-      (assert (estado (j3 (+ ?c3 ?c4)) (j4 0) (padre ?hecho) (nivel (+ ?nivel 1))(s-estado "[J4->J3]")))
+      (assert(node (jars j3 (+ ?j3 ?j4) j4 0) (level (+ 1 ?l)) (father ?node)))
 )
 
-
-;*************************************************************
-;
-;      regla vierte j4 sobre j3 (2)
-;      (se puede echar mas de lo que cabe)
-;
-;*************************************************************
-
-(defrule vierte-j4-sobre-j3-2
-      (declare (salience 500))
-      ?hecho <- (estado (j3 ?c3)(j4 ?c4)(nivel ?nivel))
-      (test (> ?c4 0))
-      (test (< ?c3 3))
-      (test (< (- 3 ?c3) ?c4))
-      (test (neq ?c4 2))
+; Generate state
+(defrule pourJ4InJ3Spill
+      (declare (salience 300))
+      ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
+      (test (neq ?j3 3))
+      (test (neq ?j4 0))
+      (test (> (- (+ ?j4 ?j3) 3) 0))
 =>
-      (bind ?cabe (- 3 ?c3))
-      (assert (estado (j3 3) (j4 (- ?c4 ?cabe)) (padre ?hecho)(nivel (+ ?nivel 1)) (s-estado "[J4->J3]")))
+      (assert(node (jars j3 3 j4 (- (+ ?j4 ?j3) 3)) (level (+ 1 ?l)) (father ?node)))
 )
 
-
-;*************************************************************
-;
-;      regla vierte j3 sobre j4 (1)
-;      (cabe mas de lo que se puede echar)
-;
-;*************************************************************
-
-(defrule vierte-j3-sobre-j4
-      (declare (salience 500))
-      ?hecho <- (estado (j3 ?c3) (j4 ?c4)(nivel ?nivel))
-      (test (> ?c3 0))
-      (test (< ?c4 4))
-      (test (> (- 4 ?c4) ?c3))
-      (test (neq ?c4 2))
+; Generate state
+(defrule pourJ3InJ4
+      (declare (salience 300))
+      ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
+      (test (neq ?j3 0))
+      (test (neq ?j4 4))
+      (test (<= (- (+ ?j4 ?j3) 3) 0))
 =>
-      (assert (estado (j3 0) (j4 (+ ?c4 ?c3)) (padre ?hecho) (nivel (+ ?nivel 1))(s-estado "[J3->J4]")))
+      (assert(node (jars j3 0 j4 (+ ?j3 ?j4)) (level (+ 1 ?l)) (father ?node)))
 )
 
-;*************************************************************
-;
-;      regla vierte j3 sobre j4 (2)
-;      (cabe menos de lo que se puede echar)
-;
-;*************************************************************
-
-(defrule vierte-j3-sobre-j4-2
-      (declare (salience 500))
-      ?hecho <- (estado (j3 ?c3) (j4 ?c4)(nivel ?nivel))
-      (test (> ?c3 0))
-      (test (< ?c4 4))
-      (test (< (- 4 ?c4) ?c3))
-      (test (neq ?c4 2))
+; Generate state
+(defrule pourJ3InJ4Spill
+      (declare (salience 300))
+      ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
+      (test (neq ?j3 0))
+      (test (neq ?j4 4))
+      (test (> (- (+ ?j4 ?j3) 3) 0))
 =>
-      (bind ?cabe (- 4 ?c4))
-      (assert (estado (j3 (- ?c3 ?cabe)) (j4 4) (padre ?hecho) (nivel (+ ?nivel 1))(s-estado "[J3->J4]")))
+      (assert(node (jars j3 (- (+ ?j4 ?j3) 3) j4 4) (level (+ 1 ?l)) (father ?node)))
 )
 
-
-;*************************************************************
-;
-;      incremento del contador de nodos
-;
-;*************************************************************
-
-(defrule contador-nodos      
-      (declare (salience 1000))
-      ?estado <- (estado (nodo ?nodoestado))
-      ?hechonodo <- (nodoactual ?contador)
-      (test(= ?nodoestado 0))
-=>
-      (assert (nodoactual (+ 1 ?contador)))
-      (modify ?estado (nodo ?contador))
-      (retract ?hechonodo)
-)
-
-
-;*************************************************************
-;
-;      regla elimina estados repetidos (1)
-;      el nodo recien creado (0) es de mayor profundidad
-;
-;*************************************************************
-
-(defrule elimina-estados-repetidos-1
+; Eliminate Twins
+(defrule eliminateTwins
       (declare (salience 2000))
-      ?hecho1 <- (estado (j4 ?c4-1) (j3 ?c3-1) (nodo ?n) (nivel ?n1) (padre ?p1))
-      ?hecho2 <- (estado (j4 ?c4-2) (j3 ?c3-2) (nodo 0) (nivel ?n2) (padre ?p2))
-      (test(= ?c4-1 ?c4-2))
-      (test(= ?c3-1 ?c3-2))
-      (test(>= ?n2 ?n1))
-      (test(neq ?n 0))
+      ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l) (father ?f))
+      ?twinNode <- (node (jars j3 ?tj3 j4 ?tj4) (level ?tl) (father ?tf))
+      (test (eq ?j4 ?tj4))
+      (test (eq ?j3 ?tj3))
+      (test (>= ?tl ?l))
+      (test (neq ?f ?tf))
 =>
-      (retract ?hecho2)
+      (retract ?twinNode)
 )    
 
-
-;*************************************************************
-;
-;      regla elimina estados repetidos (2)
-;      el nodo recien creado (0) es de menor profundidad
-;
-;*************************************************************
-
-(defrule elimina-estados-repetidos-2
-      (declare (salience 2000))
-      ?hecho1 <- (estado (j4 ?c4-1) (j3 ?c3-1) (nodo ?n) (nivel ?n1) (padre ?p1))
-      ?hecho2 <- (estado (j4 ?c4-2) (j3 ?c3-2) (nodo 0) (nivel ?n2) (padre ?p2) (s-estado ?accion))
-      (test(= ?c4-1 ?c4-2))
-      (test(= ?c3-1 ?c3-2))
-      (test(> ?n1 ?n2))
-      (test(neq ?n 0))
-=>
-      (modify ?hecho1 (padre ?p2) (nivel ?n2) (s-estado ?accion))
-      (retract ?hecho2)
-)    
-
-;**************************************************************
-;
-;      regla reconstruye arbol
-;
-;**************************************************************
-
-(defrule rehace-arbol
+; Generate the Final result
+(defrule finalResult 
       (declare (salience 3000))
-      ?padre <- (estado (nivel ?np))
-      ?hijo <- (estado (nivel ?nh) (padre ?padre))
-      (test (> (- ?nh ?np) 1))
+      ?final <- (final 0)
+      ?node <- (node (jars j3 ?j3 j4 2))
 =>
-      (modify ?hijo (nivel (+ ?np 1)))
-)    
-
-
-;**************************************************************
-;
-;      regla meta alcanzada
-;
-;**************************************************************
-
-(defrule meta-conseguida
-      (declare (salience 600))
-      ?meta <- (estado (j4 2))
-=>
-      (printout t "Meta conseguida: " crlf)
-      (assert (recorre ?meta))
-      (assert (camino))
+      (assert(final 1))
+      (retract ?final)
+      (facts)
+      (exit)
 )
-
-
-;*************************************************************
-;
-;      regla contruye-camino
-;
-;*************************************************************
-
-(defrule contruye-camino
-      (declare (salience 2500))
-      ?viejalista <- (camino $?seq)
-      ?estado <- (estado (padre ?padre) (s-estado ?accion))
-      ?viejoestado <- (recorre ?estado)
-=>
-      (assert (camino ?accion ?seq))
-      (assert (recorre ?padre))
-      (retract ?viejalista)
-      (retract ?viejoestado)
-)
-
-;*************************************************************
-;
-;      regla terminado
-;
-;*************************************************************
-
-(defrule terminado
-      (declare (salience 2500))
-      ?rec <- (recorre sin-padre)
-      ?lista <- (camino $?secuencia)
-=>
-      (printout t "Solucion:" ?secuencia crlf)
-      (retract ?rec ?lista)
-)
-
-;**************************************************************
-;
-;      regla informa nodos
-;
-;**************************************************************
-
-(defrule informa-nodos
-      (declare (salience 100))
-      (nodoactual ?cuenta)
-=>
-      (printout t "Se han examinado un total de " (- ?cuenta  1) " estados distintos" crlf)
-)
-
