@@ -23,7 +23,6 @@
 =>
       (assert(node (jars j3 0 j4 0) (father none) (level 0))
       (assert(globalLevel 0))
-      (assert(final 0))
       (retract ?aux_fact)
 )
 
@@ -32,7 +31,6 @@
 (defrule increaseLevel
       (declare (salience 100))
       ?level <- (globalLevel ?l)
-      (final 0)
 =>
       (retract ?level)
       (assert(globalLevel (+ ?l 1)))
@@ -168,11 +166,8 @@
 ; When we archieve the final state the program ends
 (defrule finalResult 
       (declare (salience 3000))
-      ?final <- (final 0)
       ?node <- (node (jars j3 ?j3 j4 2))
 =>
-      (assert(final 1))
-      (retract ?final)
       (facts)
       (exit)
 )
