@@ -3,8 +3,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
-\usepackage{graphicx}
+
 \usepackage[colorlinks = true, linkcolor = blue]{hyperref}
+\usepackage{listings}
+\usepackage{graphicx}
 
 \author{Pablo Rodríguez Guillén (Representante): 32733455Q \\
 		José Márquez Doblas: 46074763J}
@@ -70,9 +72,34 @@ Para que el programa haga una búsqueda primero en anchura, hay que asegurar que
 
 Para controlar esto, hemos definido un hecho \emph{globalLevel n} donde \emph{n} es el nivel de los padres que están generando nuevos nodos en un momento determinado de la ejecución de nuestro programa. Estos nuevos nodos, como es lógico, incrementan su nivel en una unidad. Para asegurarnos de que esto es así, todas las reglas que generan nuevos nodos del archivo \emph{JarrasAnchura.clp} tienen un antecedente que comprueba que el nivel del nodo que activa la función es igual al que alberga \emph{globalLevel}.
 
-Cuando todos los nodos de un mismo nivel han generado todos sus hijos posibles (recordamos que cada vez que se genera un nuevo nodo se pueden activar las reglas de \emph{removeTwins} y \emph{finalResult}) activando las reglas que generan nuevos nodos, se activa una función de menor prioridad que solo hemos implementado en la búsqueda primero en anchura que simplemente incrementa \emph{globalLevel} en una unidad, lo que permite que los estados de nivel mayor, puedan activar reglas.
+Cuando todos los nodos de un mismo nivel han generado todos sus hijos posibles (recordamos que cada vez que se genera un nuevo nodo se pueden activar las reglas de \emph{removeTwins} y \emph{finalResult}) activando las reglas que generan nuevos nodos, se activa una función de menor prioridad que solo hemos implementado en la búsqueda primero en anchura que simplemente incrementa \emph{globalLevel} en una unidad, lo que permite que los estados de un nivel mayor, puedan activar reglas. Esta función es \emph{increaseLevel}.
 
 \subsubsection{Búsqueda primero en profundidad} \label{profundidad} 
+La implementación de este método de búsqueda es mucho más directa en CLIPS ya que este, es un sistema basado en reglas que trabaja con la información más reciente. De manera que los hechos más recientes se colocan al final de la tabla de la base de hechos y las reglas comprueban sus antecedentes con hechos de abajo a arriba, en cuanto a posición en la base de hechos se refiere.
+
+De manera que al eliminar el antecedente que exigía, en la búsqueda primero en anchura, que los nodos fueran del mismo nivel, el programa genere nuevos hijos con los nodos de mayor profundidad, ya que estos siempre van a ser los más recientes generados. Por la misma razón no es necesario incluir la regla \emph{increaseLevel}.
+
+\newpage
+
+\section{Manual de usuario}
+La ejecución de los programas es muy sencilla, simplemente debemos abrir \emph{CLIPS} en el directorio \emph{code} del fichero \emph{.zip} extraído y ejecutar los siguientes comandos:
+\begin{itemize}
+	\item Para la búsqueda primero en anchura:
+\end{itemize}
+\begin{lstlisting}
+	(load JarrasAnchura.clp)
+	(reset)
+	(run)
+\end{lstlisting}
+\begin{itemize}
+	\item Para la búsqueda primero en profundidad:
+\end{itemize}
+\begin{lstlisting}
+	(load JarrasProfundidad.clp)
+	(reset)
+	(run)
+\end{lstlisting}
+
 
 
 
