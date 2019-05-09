@@ -92,7 +92,7 @@
 
 ; Pour 4L jar into 3L jar
 ; Generate a state where the 3L jar is filled with the 4L jar
-; The 4L jar will be empty before this
+; The 4L jar will be empty after this
 (defrule pourJ4InJ3
       (declare (salience 300))
       ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
@@ -122,7 +122,7 @@
 
 ; Pour 3L jar into 4L jar
 ; Generate a state where the 4L jar is filled with the 3L jar
-; The 3L jar will be empty before this
+; The 3L jar will be empty after this
 (defrule pourJ3InJ4
       (declare (salience 300))
       ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
