@@ -15,9 +15,6 @@
       (slot level
             (type INTEGER)
             (default 0))
-      (slot iteration
-            (type INTEGER)
-            (default 0))
 )
 
 
@@ -27,9 +24,7 @@
 (defrule initial
       ?aux_fact <- (initial-fact)
 =>
-      (assert(node (jars j3 0 j4 0) (father none) (level 0) (iteration 0)))
-      (assert(globalLevel 0))
-      (assert(globalIteration 0))
+      (assert(node (jars j3 0 j4 0) (father none) (level 0)))
       (retract ?aux_fact)
 )
 

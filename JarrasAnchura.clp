@@ -24,7 +24,7 @@
 (defrule initial
       ?aux_fact <- (initial-fact)
 =>
-      (assert(node (jars j3 0 j4 0) (father none) (level 0))
+      (assert(node (jars j3 0 j4 0) (father none) (level 0)))
       (assert(globalLevel 0))
       (retract ?aux_fact)
 )
