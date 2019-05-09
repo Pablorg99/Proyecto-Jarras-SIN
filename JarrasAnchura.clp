@@ -2,6 +2,9 @@
 ; Clips 6.30
 ; Solution made by Pablo Rodríguez Guillén and José Márquez Doblas
 
+; We need to control BDF procedure in order to activate the rules in right order
+
+
 ; Define the node template that we will use for each state
 (deftemplate node
       (multislot jars 
@@ -51,7 +54,7 @@
 
 ; Fill 4L jar
 ; Generate a state with 4L in the 4L jar
-; The 3L jar will reamin equal
+; The 3L jar will remain equal
 (defrule fillJar4L
       (declare (salience 300))
       ?node <- (node (jars j3 ?j3 j4 ?j4) (level ?l))
