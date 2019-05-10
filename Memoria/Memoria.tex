@@ -50,9 +50,9 @@ Identificar y representar los hechos necesarios para resolver el problema en cli
 Para representar la información del problema hemos utilizado hechos no ordenados, utilizando una plantilla \emph{node} a través del constructor \emph{deffacts}. La plantilla cuenta con tres atributos: 
 
 \begin{itemize}
-	\item \textbf{\emph{multisolt jars}}: durante todo el programa contendrá un hecho ordenado con los siguientes 4 sibolos: \emph{j3 x j4 y} siendo \emph{x} e \emph{y} los valores que representan el contenido de la jarra de cuatro litros y de tres litros. Estos valores van a oscilar entre cero y cuatro, dado que la lógica implementada en las reglas no lo permite de otro modo.
-	\item \textbf{\emph{slot father}}: contiene un hecho del tipo \emph{FACT-ADRESS SYMBOL}, es decir, la dirección de memoria de otro hecho. En este caso, será un hecho ordenado \emph{node} que apuntará al nodo padre del nodo en cuestión. Hay un símbolo permitido \emph{none}, para poder representar a la raíz del árbol del problema, que no tiene nodo padre.
-	\item \textbf{\emph{slot level}}: contiene un número entero que representa el nivel del profundidad del nodo en el árbol. La profundidad de un nodo es la profunidad del padre más uno. La profundidad del nodo raíz es 0.
+	\item \textbf{\emph{multisolt jars}}: durante todo el programa contendrá un hecho ordenado con los siguientes 4 símbolos: \emph{j3 x j4 y} siendo \emph{x} e \emph{y} los valores que representan el contenido de la jarra de tres litros y de cuatro litros respectivamente. Estos valores van a oscilar entre cero y el total de litros de cada jarra, dado que la lógica implementada en las reglas no lo va a permitir de otro modo.
+	\item \textbf{\emph{slot father}}: contiene un hecho del tipo \emph{FACT-ADRESS SYMBOL}, es decir, la dirección de memoria de otro hecho. En este caso, será un hecho ordenado \emph{node} que es el padre del nodo en cuestión. Tiene un símbolo permitido \emph{none} para poder representar el nodo raíz del árbol del problema, que no tiene nodo padre.
+	\item \textbf{\emph{slot level}}: contiene un número entero que representa el nivel de profundidad del nodo en el árbol. La profundidad de un nodo es la profunidad del padre más uno. La profundidad del nodo raíz es 0.
 \end{itemize}
 
 \subsection{Análisis de diseño e implementación}
@@ -62,15 +62,15 @@ En los siguientes apartados se detalla la estrategia concreta seguida para los m
 	\item Reglas de las operaciones permitidas por el enunciado para generar nuevos estados:
 	
 	\begin{itemize}
-		\item \textbf{Llenado de jarras:} Se permite siempre que la jarra a llenar no esté llena de antemano.
-		\item \textbf{Vaciado de jarras:} Se permite siempre que la jarra a vaciar no esté vacía de antemano.
-		\item \textbf{Vertido de una jarra en otra:} Existen dos versiones de la regla para cada jarra. Esto es porque  el comportamiento de la regla varía si al verter una jarra en otra se derrama el contenido, lo cual no se permite en el problema. Para solucionar esto planteamos dos soluciones, utilizar funciones procedurales de tipo \emph{if} o implementar dos reglas. Optamos por la segunda opción ya que se nos recomendaba usar el menor número de funciones procedurales posibles.
+		\item \textbf{Llenado de jarras:} Se activa siempre que la jarra a llenar no esté llena de antemano.
+		\item \textbf{Vaciado de jarras:} Se activa siempre que la jarra a vaciar no esté vacía de antemano.
+		\item \textbf{Vertido de una jarra en otra:} Existen dos versiones de la regla para cada jarra. Esto es porque  el comportamiento de la regla varía si al verter una jarra en otra se derrama el contenido o no. Para solucionar esto planteamos dos soluciones, utilizar funciones procedurales de tipo \emph{if} o implementar dos reglas. Optamos por la segunda opción ya que se nos recomendaba usar el menor número de funciones procedurales posibles.
 	\end{itemize}
 	
 	\item Reglas para controlar el flujo del programa:
 	
 	\begin{itemize}
-		\item \textbf{\emph{initial}:} Se ejecuta siempre al principio, ya que el único hecho en la base de hechos al inicio del programa es el \emph{initial-fact}. Afirma el hecho correspondiente al nodo raíz del árbol del problema.
+		\item \textbf{\emph{initial}:} Se ejecuta siempre al principio de la ejecución de los programas, ya que el único hecho en la base de hechos al inicio del programa es el \emph{initial-fact}. Afirma el hecho correspondiente al nodo raíz del árbol del problema.
 		\item \textbf{\emph{removeTwins}:} Por cada nodo, se generan todos los hijos posibles. Esto causa que estados que ya hayan aparecido anteriormente durante la ejecución del programa se vuelvan a crear. Para evitar esto, la regla \emph{removeTwins} tiene una prioridad muy alta y sus antecedentes se comprueban cada vez que se genera un nuevo nodo. Si el nuevo nodo es uno repetido, se activa la regla y se elimina el nodo.
 		\item \textbf{\emph{finalResult}:} Al igual que \emph{removeTwins} tiene una prioridad muy alta, sus antecedentes comprueban si el nodo en cuestión tiene la jarra de cuatro litros con dos litros. Si se activa, el programa muestra el contenido de la base de hechos con el comando \emph{(facts)} y finaliza.
 	\end{itemize}
@@ -79,14 +79,14 @@ En los siguientes apartados se detalla la estrategia concreta seguida para los m
 \subsubsection{Búsqueda primero en anchura} \label{anchura}
 Para que el programa haga una búsqueda primero en anchura, hay que asegurar que no se incremente el nivel con el que se generan los nuevos nodos, hasta que no se hayan generado todos los nodos de un mismo nivel. 
 
-Para controlar esto, hemos definido un hecho \emph{globalLevel n} donde \emph{n} es el nivel de los padres que están generando nuevos nodos en un momento determinado de la ejecución de nuestro programa. Estos nuevos nodos, como es lógico, incrementan su nivel en una unidad. Para asegurarnos de que esto es así, todas las reglas que generan nuevos nodos del archivo \emph{JarrasAnchura.clp} tienen un antecedente que comprueba que el nivel del nodo que activa la función es igual al que alberga \emph{globalLevel}.
+Para controlar esto, hemos definido un hecho \emph{globalLevel n} donde \emph{n} es el nivel de los padres que están generando nuevos nodos en un momento determinado de la ejecución de nuestro programa. Estos nuevos nodos, como es lógico, incrementan su nivel en una unidad respecto al nivel de su padre. Para asegurarnos de que esto es así, todas las reglas del archivo \emph{JarrasAnchura.clp} que generan nuevos nodos tienen un antecedente que comprueba que el nivel del nodo que activa la regla es igual al que alberga \emph{globalLevel}.
 
-Cuando todos los nodos de un mismo nivel han generado todos sus hijos posibles (recordamos que cada vez que se genera un nuevo nodo se pueden activar las reglas de \emph{removeTwins} y \emph{finalResult}) activando las reglas que generan nuevos nodos, se activa una función de menor prioridad que solo hemos implementado en la búsqueda primero en anchura que simplemente incrementa \emph{globalLevel} en una unidad, lo que permite que los estados de un nivel mayor, puedan activar reglas. Esta función es \emph{increaseLevel}.
+Cuando todos los nodos de un mismo nivel han generado todos sus hijos posibles (recordamos que cada vez que se genera un nuevo nodo se pueden activar las reglas de \emph{removeTwins} y \emph{finalResult}). Se activa una regla de menor prioridad que solo hemos implementado en la búsqueda primero en anchura que  incrementa \emph{globalLevel} en una unidad, lo que permite que los estados de un nivel mayor, puedan activar reglas de generación de nodos. Esta función es \emph{increaseLevel}.
 
 \subsubsection{Búsqueda primero en profundidad} \label{profundidad} 
-La implementación de este método de búsqueda es mucho más directa en CLIPS ya que este, es un sistema basado en reglas que trabaja con la información más reciente. De manera que los hechos más recientes se colocan al final de la tabla de la base de hechos y las reglas comprueban sus antecedentes con hechos de abajo a arriba, en cuanto a posición en la base de hechos se refiere.
+La implementación de este método de búsqueda es mucho más directa en CLIPS ya que este, es un sistema basado en reglas que trabaja con la información más reciente. Los hechos más recientes se colocan al final de la tabla de la base de hechos y las reglas comprueban sus antecedentes con hechos de abajo a arriba, en cuanto a posición en la base de hechos se refiere.
 
-De manera que al eliminar el antecedente que exigía, en la búsqueda primero en anchura, que los nodos fueran del mismo nivel, el programa genere nuevos hijos con los nodos de mayor profundidad, ya que estos siempre van a ser los más recientes generados. Por la misma razón no es necesario incluir la regla \emph{increaseLevel}.
+Al eliminar los antecedentes que exigían, en la búsqueda primero en anchura, que los nodos tuvieran el mismo nivel que el reflejado en \emph{globalLevel}. El programa genera nuevos hijos con los nodos de mayor profundidad, ya que estos siempre van a ser los más recientes generados. Por la misma razón no es necesario incluir la regla \emph{increaseLevel}.
 
 \newpage
 
@@ -123,9 +123,9 @@ La ejecución de los programas es muy sencilla, simplemente debemos abrir \emph{
 \newpage
 
 \section{Roles en el desarrollo}
-La coordinación entre nosotros a lo largo del desarrollo del proyecto ha sido muy buena. La fase inicial se hizo de forma conjunta. Consistió en el diseño general de reglas que íbamos a necesitar y la codificación de la búsqueda primero en anchura. Esto se debe a que vimos que la búsqueda primero en profundidad requería de menos condiciones. Durante esta fase inicial 
+La coordinación entre nosotros a lo largo del desarrollo del proyecto ha sido muy buena. La fase inicial se hizo de forma conjunta. Consistió en el diseño general de las reglas que íbamos a necesitar y la codificación de la búsqueda primero en anchura. Esto se debe a que vimos que la búsqueda primero en profundidad requería de menos condiciones. Durante esta fase inicial nos enfocamos en implementar la búsqueda y en que funcionara. Cuando llegamos a ese punto dividimos totalmente el trabajo. 
 
-Nos enfocamos en implementar la búsqueda y en que funcionara. Cuando llegamos a ese punto dividimos totalmente el trabajo. José Márquez se ha dedicado a la mejora del código inicial: eliminación de hechos irrelevantes que no aportaban lo que pensamos en un inicio durante la fase de diseño y adición de comentarios. Además, se ha encargado de la implementación de la búsqueda en profundidad, que dado el comportamiento de CLIPS y partiendo del código de la búsqueda primero en anchura resultó más o menos sencillo.
+José Márquez se ha dedicado a la mejora del código inicial: eliminación de hechos irrelevantes que no aportaban lo que pensamos en un inicio durante la fase de diseño y adición de comentarios. Además, se ha encargado de la implementación de la búsqueda en profundidad, que dado el comportamiento de CLIPS y partiendo del código de la búsqueda primero en anchura resultó más o menos sencillo.
 
 Por otro lado, Pablo Rodríguez Guillén se ha encargado de la elaboración de la memoria del proyecto al completo.
 
