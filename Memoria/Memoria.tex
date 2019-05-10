@@ -7,6 +7,9 @@
 \usepackage[colorlinks = true, linkcolor = blue]{hyperref}
 \usepackage{listings}
 \usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{url}
+
 
 \author{Pablo Rodríguez Guillén (Representante): 32733455Q \\
 		José Márquez Doblas: 46074763J}
@@ -17,6 +20,8 @@
 \setlength \parskip{1em}
 
 \begin{document}
+
+\nocite{*}
 
 \maketitle
 \tableofcontents
@@ -52,14 +57,18 @@ Para representar la información del problema hemos utilizado hechos no ordenado
 
 \subsection{Análisis de diseño e implementación}
 En los siguientes apartados se detalla la estrategia concreta seguida para los métodos de búsqueda \hyperref[anchura]{primero en anchura} y \hyperref[profundidad]{primero en profundidad}. A un nivel más general hemos implementado reglas que se podrían dividir en dos grupos.
+
 \begin{itemize}
 	\item Reglas de las operaciones permitidas por el enunciado para generar nuevos estados:
+	
 	\begin{itemize}
 		\item \textbf{Llenado de jarras:} Se permite siempre que la jarra a llenar no esté llena de antemano.
 		\item \textbf{Vaciado de jarras:} Se permite siempre que la jarra a vaciar no esté vacía de antemano.
 		\item \textbf{Vertido de una jarra en otra:} Existen dos versiones de la regla para cada jarra. Esto es porque  el comportamiento de la regla varía si al verter una jarra en otra se derrama el contenido, lo cual no se permite en el problema. Para solucionar esto planteamos dos soluciones, utilizar funciones procedurales de tipo \emph{if} o implementar dos reglas. Optamos por la segunda opción ya que se nos recomendaba usar el menor número de funciones procedurales posibles.
 	\end{itemize}
+	
 	\item Reglas para controlar el flujo del programa:
+	
 	\begin{itemize}
 		\item \textbf{\emph{initial}:} Se ejecuta siempre al principio, ya que el único hecho en la base de hechos al inicio del programa es el \emph{initial-fact}. Afirma el hecho correspondiente al nodo raíz del árbol del problema.
 		\item \textbf{\emph{removeTwins}:} Por cada nodo, se generan todos los hijos posibles. Esto causa que estados que ya hayan aparecido anteriormente durante la ejecución del programa se vuelvan a crear. Para evitar esto, la regla \emph{removeTwins} tiene una prioridad muy alta y sus antecedentes se comprueban cada vez que se genera un nuevo nodo. Si el nuevo nodo es uno repetido, se activa la regla y se elimina el nodo.
@@ -83,25 +92,47 @@ De manera que al eliminar el antecedente que exigía, en la búsqueda primero en
 
 \section{Manual de usuario}
 La ejecución de los programas es muy sencilla, simplemente debemos abrir \emph{CLIPS} en el directorio \emph{code} del fichero \emph{.zip} extraído y ejecutar los siguientes comandos:
+
 \begin{itemize}
 	\item Para la búsqueda primero en anchura:
 \end{itemize}
+
 \begin{lstlisting}
 	(load JarrasAnchura.clp)
 	(reset)
 	(run)
 \end{lstlisting}
+
 \begin{itemize}
 	\item Para la búsqueda primero en profundidad:
 \end{itemize}
+
 \begin{lstlisting}
 	(load JarrasProfundidad.clp)
 	(reset)
 	(run)
 \end{lstlisting}
 
+\begin{figure}[ht]
+	\centering
+	\subfloat[Búsqueda Primero en Anchura]{\includegraphics[width=0.44\textwidth]{Anchura.png}}
+	\qquad
+	\subfloat[Búsqueda Primero en Profundidad]{\includegraphics[width=0.44\textwidth]{Profundidad.png}}
+\end{figure}
 
+\newpage
 
+\section{Roles en el desarrollo}
+La coordinación entre nosotros a lo largo del desarrollo del proyecto ha sido muy buena. La fase inicial se hizo de forma conjunta. Consistió en el diseño general de reglas que íbamos a necesitar y la codificación de la búsqueda primero en anchura. Esto se debe a que vimos que la búsqueda primero en profundidad requería de menos condiciones. Durante esta fase inicial 
 
+Nos enfocamos en implementar la búsqueda y en que funcionara. Cuando llegamos a ese punto dividimos totalmente el trabajo. José Márquez se ha dedicado a la mejora del código inicial: eliminación de hechos irrelevantes que no aportaban lo que pensamos en un inicio durante la fase de diseño y adición de comentarios. Además, se ha encargado de la implementación de la búsqueda en profundidad, que dado el comportamiento de CLIPS y partiendo del código de la búsqueda primero en anchura resultó más o menos sencillo.
 
+Por otro lado, Pablo Rodríguez Guillén se ha encargado de la elaboración de la memoria del proyecto al completo.
+
+\clearpage
+
+\addcontentsline{toc}{section}{Referencias}
+\bibliography{bibliography}
+\bibliographystyle{unsrt}
+	
 \end{document}
