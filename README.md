@@ -2,7 +2,7 @@
 
 Proyecto final de prácticas de la asignatura Sistemas Inteligentes del grado Ingeniería Informática de la Universidad de Córdoba.
 
-Resolución del problema de las jarras de agua en CLIPS y memoria del proyecto
+Resolución del problema de las jarras de agua en CLIPS y memoria del proyecto.
 
 Trabajo desarrollado por:
 
